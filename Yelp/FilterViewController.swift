@@ -166,12 +166,12 @@ extension FilterViewController: UITableViewDelegate, UITableViewDataSource {
         case 2:
             if indexPath.row == 0 {
                 let headerCell = tableView.dequeueReusableCell(withIdentifier: "headerCell", for: indexPath) as! HeaderCell
-                headerCell.headerNameLabel.text = selectedDistance
+                headerCell.headerNameLabel.text = selectedDistance + " mil"
                 return headerCell
             }
             let distanceCell = tableView.dequeueReusableCell(withIdentifier: "distanceCell", for: indexPath) as! DistanceFilterCell
             distanceCell.selectedState = distanceStates[indexPath.row - 1]
-            distanceCell.distanceLabel.text = distances[indexPath.row - 1]
+            distanceCell.distanceLabel.text = distances[indexPath.row - 1] + " mil"
             return distanceCell
         case 3:
             if isShowCategoryMoreSelected {

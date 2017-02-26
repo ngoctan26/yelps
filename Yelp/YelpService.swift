@@ -63,7 +63,7 @@ class YelpService: BDBOAuth1RequestOperationManager {
             parameters["category_filter"] = (categories!).joined(separator: ",") as AnyObject?
         }
         if radius != nil {
-            parameters["radius_filter"] = radius! as AnyObject?
+            parameters["radius_filter"] = converMilToMeter(milValue: radius!) as AnyObject?
         }
         if deals != nil {
             parameters["deals_filter"] = deals! as AnyObject?
@@ -80,6 +80,10 @@ class YelpService: BDBOAuth1RequestOperationManager {
         }, failure: { (operation: AFHTTPRequestOperation?, error: Error) in
             completion(nil, error)
         })!
+    }
+    
+    func converMilToMeter(milValue: Float) -> Float {
+        return milValue * 1609.344
     }
 
     func getYelpModeAsString(mode: YelpSortMode) -> String {
