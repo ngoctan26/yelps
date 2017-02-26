@@ -14,13 +14,14 @@ class AppConfigUtil {
         guard let returnValue = defaults.object(forKey: key) else {
             return defaultValue
         }
-        return returnValue
+        return NSKeyedUnarchiver.unarchiveObject(with: returnValue as! Data)
     }
     
     static func saveSetting(configurations: [String : Any]) {
         let defaults = UserDefaults.standard
         for (key, object) in configurations {
-            defaults.set(object, forKey: key)
+            let data = NSKeyedArchiver.archivedData(withRootObject: object)
+            defaults.set(data, forKey: key)
         }
         defaults.synchronize()
     }

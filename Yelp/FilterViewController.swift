@@ -23,6 +23,7 @@ class FilterViewController: UIViewController {
     
     @IBAction func saveClicked(_ sender: UIBarButtonItem) {			
         // Get current filter
+        var saveFilter: [String:Any] = [:]
         var filter: [String:Any] = [:]
         filter["category"] = selectedCategories
         filter["radius"] = selectedDistance
@@ -30,7 +31,10 @@ class FilterViewController: UIViewController {
         filter["sortMode"] = selectedSortMode
         
         // TODO: Save filter into NSUser
-        // AppConfigUtil.saveSetting(configurations: filter)
+        saveFilter["radius"] = selectedDistance
+        saveFilter["deals"] = isDealEnable
+        saveFilter["sortMode"] = selectedSortMode.rawValue
+        AppConfigUtil.saveSetting(configurations: saveFilter)
         
         // Update main page with filter
         filterDelegate.onFilterChanged!(filterVC: self, filterValue: filter) 
@@ -75,8 +79,29 @@ class FilterViewController: UIViewController {
     }
     
     func loadSavedSetting() {
-        if let savedCategory = AppConfigUtil.loadSetting(key: "category-state", defaultValue: nil) {
-            categoryState = savedCategory as! [Int : Bool]
+        if let savedRadius = AppConfigUtil.loadSetting(key: "radius", defaultValue: "Auto") as? String {
+            for (index, value) in distances.enumerated() {
+                if value == savedRadius {
+                    distanceStates[index] = true
+                    selectedDistance = value
+                } else {
+                    distanceStates[index] = false
+                }
+            }
+        }
+        if let isSavedDeal = AppConfigUtil.loadSetting(key: "deals", defaultValue: false) as? Bool {
+            isDealEnable = isSavedDeal
+        }
+        if let sortSavedMode = AppConfigUtil.loadSetting(key: "sortMode", defaultValue: YelpSortMode.bestMatched.rawValue) as? Int {
+            for (index, value) in sortModes.enumerated() {
+                if sortSavedMode == value.rawValue {
+                    sortModeStates[index] =  true
+                    selectedSortMode = value
+                } else {
+                    sortModeStates[index] =  false
+                }
+            }
+            
         }
     }
 
@@ -150,6 +175,7 @@ extension FilterViewController: UITableViewDelegate, UITableViewDataSource {
         switch indexPath.section {
         case 0:
             let dealCell = tableView.dequeueReusableCell(withIdentifier: "dealCell", for: indexPath) as! DealFilterCell
+            dealCell.dealSwBtn.isOn = isDealEnable
             dealCell.dealDelegate = self
             return dealCell
         case 1:

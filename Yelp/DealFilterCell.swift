@@ -15,6 +15,8 @@ import UIKit
 class DealFilterCell: UITableViewCell {
     var dealDelegate: DealFilterCellDelegate!
     
+    @IBOutlet weak var dealSwBtn: UISwitch!
+    
     @IBAction func onSwitchChange(_ sender: UISwitch) {
         dealDelegate.onDealFilterChanged!(cell: self, isEnable: sender.isOn)
     }
